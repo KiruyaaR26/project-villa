@@ -1,0 +1,250 @@
+/* ==========================================================================
+   1. ROOT VARIABLES & RESET (Konsistensi & Anti-Slop)
+   ========================================================================== */
+:root {
+  /* Palet Warna Tema Liburan Puncak (Teal/Hijau Alami) */
+  --primary-color: #0f766e; /* Teal gelap untuk teks utama/header */
+  --accent-color: #10b981;  /* Hijau zamrud untuk uang/progress/tombol */
+  --bg-body: #f8fafc;       /* Abu-abu kebiruan sangat terang untuk latar */
+  --bg-card: #ffffff;       /* Putih bersih untuk Figure/Ground */
+  --text-main: #334155;     /* Abu-abu gelap (lebih nyaman dibaca daripada hitam pekat) */
+  --text-muted: #64748b;    /* Abu-abu medium untuk teks sekunder */
+  --border-color: #e2e8f0;  /* Garis batas yang sangat halus */
+  
+  /* Variabel Spasi (Proximity) */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding-bottom: var(--space-xl);
+}
+
+/* Penyesuaian Iconify agar sejajar dengan teks */
+.iconify {
+  vertical-align: -0.125em;
+  font-size: 1.2em;
+}
+
+/* ==========================================================================
+   2. LAYOUT & TYPOGRAPHY
+   ========================================================================== */
+/* Membatasi lebar maksimal agar tidak terlalu memanjang di layar laptop */
+header, section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+
+h1, h2, h3, h4 {
+  color: var(--primary-color);
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+
+/* Header/Hero Section */
+header {
+  background-color: var(--bg-card);
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin-bottom: var(--space-sm);
+}
+
+header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   3. LIST INFORMASI (Similarity & Proximity)
+   ========================================================================== */
+ul {
+  list-style: none; /* Menghilangkan bullet bawaan */
+}
+
+ul li {
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Jarak pas antara ikon dan teks */
+}
+
+/* Warna khusus untuk ikon di dalam list informasi */
+section#informasi .iconify,
+section#fasilitas .iconify,
+section#acara .iconify {
+  color: var(--primary-color);
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: var(--border-color);
+  max-width: 800px;
+  margin: var(--space-lg) auto;
+}
+
+/* ==========================================================================
+   4. KARTU & FORM TABUNGAN (Common Region & Figure/Ground)
+   ========================================================================== */
+/* Membuat pembungkus visual bergaya "Card" yang rapi tanpa shadow lebay */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+/* Progress Bar */
+.progress-container {
+  background-color: #e2e8f0;
+  border-radius: 99px; /* Membulat sempurna */
+  height: 16px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: var(--space-sm);
+}
+
+#progress-bar {
+  background-color: var(--accent-color);
+  height: 100%;
+  width: 0%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Transisi halus dan natural */
+}
+
+.progress-text-wrapper {
+  display: flex;
+  justify-content: space-between; /* Target di kiri, Persentase di kanan */
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Total Uang Banner */
+.total-banner {
+  background-color: #ecfdf5; /* Hijau sangat pucat */
+  color: #065f46; /* Hijau gelap kontras */
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #a7f3d0;
+}
+
+.total-banner h3 {
+  margin: 0;
+  color: inherit;
+}
+
+/* Form Inputs */
+form input, form select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-main);
+  transition: border-color 0.2s ease;
+  background-color: white; /* Tambahan agar dropdown tidak transparan */
+}
+
+/* Menunjukkan status fokus dengan jelas (Aksesibilitas) */
+form input:focus, form select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+/* Menunjukkan status fokus dengan jelas (Aksesibilitas) */
+form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+form button:hover {
+  background-color: #0d5f59;
+}
+
+form button:disabled {
+  background-color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   5. TABEL DATA (Keterbacaan)
+   ========================================================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Agar tidak rusak di layar HP kecil */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background-color: var(--bg-card);
+}
+
+th, td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+/* Striped rows (Zebra cross) untuk membedakan baris dengan mudah */
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9; /* Efek highlight saat baris ditunjuk */
+}

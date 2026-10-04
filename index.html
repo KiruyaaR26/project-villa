@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liburan Akhir Semester - Kelas Kita!</title>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="loading.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       BAGIAN 1: HEADER & HERO
+       ========================================== -->
+  <header>
+    <h1>Healing Akhir Semester Kelas! <span class="iconify" data-icon="mdi:palm-tree"></span></h1>
+    <p>Setelah pusing dihajar tugas dan ujian, saatnya kita refreshing bareng ke Puncak!</p>
+  </header>
+
+  <!-- ==========================================
+       BAGIAN 2: INFORMASI UTAMA
+       ========================================== -->
+  <section id="informasi">
+    <h2><span class="iconify" data-icon="mdi:map-marker-radius"></span> Detail Destinasi</h2>
+    <ul>
+      <li><strong>Lokasi:</strong> Villa Sejuk Indah, Puncak Bogor</li>
+      <li><strong>Tanggal:</strong> 15 - 17 Februari 2027 (3 Hari 2 Malam)</li>
+      <li><strong>Titik Kumpul:</strong> Kampus UIN Syarif Hidayatullah Jakarta</li>
+    </ul>
+  </section>
+
+  <!-- ==========================================
+       BAGIAN 3: FASILITAS & PREVIEW VILLA
+       ========================================== -->
+  <section id="fasilitas">
+    <h2><span class="iconify" data-icon="mdi:home-variant-outline"></span> Fasilitas Villa</h2>
+    <p>Villa ini punya banyak spot seru buat kita ngumpul dan bikin acara:</p>
+    <ul>
+      <li><span class="iconify" data-icon="mdi:pool"></span> Private Pool (Kolam Renang)</li>
+      <li><span class="iconify" data-icon="mdi:billiard"></span> Billiard & Meja Pingpong</li>
+      <li><span class="iconify" data-icon="mdi:grill"></span> Alat BBQ Lengkap</li>
+      <li><span class="iconify" data-icon="mdi:microphone-variant"></span> Karaoke Set & Smart TV</li>
+      <li><span class="iconify" data-icon="mdi:bed-king-outline"></span> 4 Kamar Tidur Besar</li>
+    </ul>
+    <!-- Silakan ganti src dengan link atau nama file foto villa yang asli -->
+    <!-- <img src="foto-villa.jpg" alt="Foto Villa" style="width:100%; border-radius:8px; margin-top:10px;"> -->
+  </section>
+
+  <!-- ==========================================
+       BAGIAN 4: RUNDOWN ACARA
+       ========================================== -->
+  <section id="acara">
+    <h2><span class="iconify" data-icon="mdi:fire"></span> Sekilas Acara</h2>
+    <p>Nggak cuma tidur, kita bakal ngadain acara seru:</p>
+    <ul>
+      <li><strong>Malam Pertama:</strong> BBQ party, nge-grill daging sambil curhat, & Main Werewolf.</li>
+      <li><strong>Hari Kedua:</strong> Berenang, santai, & Karaoke Night.</li>
+      <li><strong>Hari Ketiga:</strong> Packing & jalan-jalan cari oleh-oleh.</li>
+    </ul>
+  </section>
+
+  <hr> 
+
+  <!-- ==========================================
+       BAGIAN 5: TRACKER TABUNGAN
+       ========================================== -->
+  <section id="tabungan">
+    <h2><span class="iconify" data-icon="mdi:wallet-bifold-outline"></span> Yuk Nabung dari Sekarang!</h2>
+    <p>Biar nggak kerasa berat pas hari H, kita cicil bayarnya ya kawan-kawan.</p>
+
+    <!-- KARTU 1: Progress, Total, & Form (Hukum Gestalt: Common Region & Proximity) -->
+    <div class="card">
+      
+      <!-- Target dan Progress Bar -->
+      <div class="progress-text-wrapper">
+        <span>Target: Rp 5.000.000</span>
+        <span><span id="progress-text">0</span>% Terkumpul</span>
+      </div>
+      <div class="progress-container">
+        <div id="progress-bar"></div>
+      </div>
+
+      <!-- Total Terkumpul -->
+      <div class="total-banner">
+        <h3>Total Terkumpul:</h3>
+        <h3 id="total-uang">Rp 0,00</h3>
+      </div>
+
+      <!-- Form Input -->
+<!-- Form Input -->
+    <form name="submit-to-google-sheet">
+      
+      <!-- INI YANG BARU: Dropdown Nama -->
+      <select name="nama" required>
+        <option value="" disabled selected>-- Pilih Nama Kamu --</option>
+        <option value="Andi Saputra">Andi Saputra</option>
+        <option value="Budi Santoso">Budi Santoso</option>
+        <option value="Citra Kirana">Citra Kirana</option>
+        <option value="Dewi Lestari">Dewi Lestari</option>
+        <option value="Eko Prasetyo">Eko Prasetyo</option>
+        <!-- Nanti kamu tinggal tambahkan (copy-paste) option di sini sesuai absen kelasmu -->
+      </select>
+
+      <input type="number" name="terkumpul" placeholder="Jumlah Setoran (Rp)" required min="1000">
+      
+      <button type="submit">
+        <span class="iconify" data-icon="mdi:send-circle-outline"></span> Tambah Data
+      </button>
+    </form>
+
+    </div>
+
+    <!-- KARTU 2 / TABEL DATA (Hukum Gestalt: Similarity) -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Terkumpul (Rp)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabel-body">
+          <!-- Data dari Google Sheets akan dimuat di sini oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+    
+  </section>
+
+  <!-- Memanggil file JavaScript eksternal di akhir body -->
+  <script src="script.js"></script>
+
+</body>
+</html>

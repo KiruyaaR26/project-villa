@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Tabungan Villa</title>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* CSS tambahan khusus untuk menyembunyikan elemen */
+    .hidden { display: none !important; }
+    
+    /* Memusatkan form login */
+    #login-section {
+      max-width: 400px;
+      margin: 100px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BAGIAN 1: FORM LOGIN -->
+  <section id="login-section">
+    <div class="card" style="text-align: center;">
+      <h2 style="margin-bottom: 20px;"><span class="iconify" data-icon="mdi:shield-account"></span> Login Admin</h2>
+      <form id="login-form">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" id="btn-login">Masuk Panel Admin</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- BAGIAN 2: DASHBOARD ADMIN (Awalnya Disembunyikan) -->
+  <section id="admin-dashboard" class="hidden">
+    <header style="padding: 20px; margin-bottom: 20px;">
+      <h2>Panel Bendahara</h2>
+      <p>Data berikut terhubung langsung ke Google Sheets.</p>
+    </header>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Terkumpul</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="admin-tabel-body">
+          <!-- Data dimuat di sini -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    const scriptURL = 'URL_API_KAMU_DISINI'; // WAJIB GANTI DENGAN URL APPS SCRIPT KAMU
+    
+    const loginSection = document.getElementById('login-section');
+    const adminDashboard = document.getElementById('admin-dashboard');
+    const loginForm = document.getElementById('login-form');
+    const tabelBody = document.getElementById('admin-tabel-body');
+    
+    // Variabel untuk menyimpan password sementara di RAM browser selama buka tab ini
+    let savedPassword = '';
+
+    // ==========================================
+    // LOGIKA LOGIN
+    // ==========================================
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const btnLogin = document.getElementById('btn-login');
+
+      btnLogin.innerText = "Memeriksa...";
+      btnLogin.disabled = true;
+
+      let formData = new FormData();
+      formData.append('action', 'login');
+      formData.append('username', user);
+      formData.append('password', pass);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === 'success') {
+            // Login sukses! Simpan password sementara, sembunyikan login, munculkan dashboard
+            savedPassword = pass; 
+            loginSection.classList.add('hidden');
+            adminDashboard.classList.remove('hidden');
+            loadAdminData(); // Muat data tabel
+          } else {
+            alert(data.message); // Tampilkan pesan error (password salah)
+            btnLogin.innerText = "Masuk Panel Admin";
+            btnLogin.disabled = false;
+          }
+        })
+        .catch(error => {
+          alert("Koneksi gagal. Coba lagi.");
+          btnLogin.innerText = "Masuk Panel Admin";
+          btnLogin.disabled = false;
+        });
+    });
+
+    // ==========================================
+    // LOGIKA LOAD DATA ADMIN (Termasuk Tombol Hapus)
+    // ==========================================
+    function loadAdminData() {
+      tabelBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>';
+      
+      fetch(scriptURL)
+        .then(res => res.json())
+        .then(data => {
+          tabelBody.innerHTML = '';
+          if (data.length === 0) {
+            tabelBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Data kosong</td></tr>';
+            return;
+          }
+
+          data.forEach((baris, index) => {
+            let tr = document.createElement('tr');
+            let uangRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseFloat(baris.terkumpul) || 0);
+
+            tr.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${baris.nama}</td>
+              <td>${uangRupiah}</td>
+              <td>${baris.status}</td>
+              <td>
+                <button onclick="hapusData(${baris.baris})" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                  <span class="iconify" data-icon="mdi:delete"></span> Hapus
+                </button>
+              </td>
+            `;
+            tabelBody.appendChild(tr);
+          });
+        });
+    }
+
+    // ==========================================
+    // LOGIKA HAPUS DATA
+    // ==========================================
+    function hapusData(nomorBaris) {
+      if(confirm("Yakin hapus data ini secara permanen dari Sheets?")) {
+        let formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('baris', nomorBaris);
+        // Sertakan password yang disimpan tadi sebagai 'kunci' ke backend
+        formData.append('password', savedPassword); 
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+          .then(res => res.json())
+          .then(data => {
+            if(data.result === 'success') {
+              alert('Data terhapus!');
+              loadAdminData(); // Refresh tabel
+            } else {
+              alert('Gagal: ' + data.message); // Muncul jika password tidak valid
+            }
+          });
+      }
+    }
+  </script>
+</body>
+</html>
