@@ -6,6 +6,8 @@
   <title>Admin Panel - Tabungan Villa</title>
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="loading.css">
+  <link rel="stylesheet" href="progress.css">
   <style>
     /* CSS tambahan khusus untuk menyembunyikan elemen */
     .hidden { display: none !important; }
@@ -45,6 +47,8 @@
             <th>No</th>
             <th>Nama</th>
             <th>Terkumpul</th>
+            <th>Target</th> <!-- Kolom Baru -->
+            <th>Sisa Kekurangan</th> <!-- Kolom Baru -->
             <th>Status</th>
             <th>Aksi</th>
           </tr>
@@ -56,16 +60,125 @@
     </div>
   </section>
 
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyLk9fBsvoLbS796vOq7E85bgCYeZC5ic7xeKR-54UPegyQ538HNdnAIP7G8oMhUtHPtg/exec'; // WAJIB GANTI DENGAN URL APPS SCRIPT KAMU
+<!-- ==========================================
+       BAGIAN 3: TABEL REKAPITULASI KELAS (39 SISWA)
+       ========================================== -->
+  <section id="admin-rekap" class="hidden" style="padding: 20px; margin-top: 30px;">
+    <header style="margin-bottom: 15px;">
+      <h2>Rekapitulasi Kas & Pelunasan Seluruh Mahasiswa</h2>
+      <p>Daftar lengkap status pembayaran target Rp 300.000 per anak.</p>
+    </header>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Mahasiswa</th>
+            <th>Total Terkumpul</th>
+            <th>Target</th>
+            <th>Sisa Kekurangan</th>
+            <th>Status Pelunasan</th>
+          </tr>
+        </thead>
+        <tbody id="admin-rekap-body">
+          <!-- Data rekap dimuat di sini oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyLk9fBsvoLbS796vOq7E85bgCYeZC5ic7xeKR-54UPegyQ538HNdnAIP7G8oMhUtHPtg/exec';
     
     const loginSection = document.getElementById('login-section');
     const adminDashboard = document.getElementById('admin-dashboard');
+    const adminRekap = document.getElementById('admin-rekap'); // Elemen Rekap
     const loginForm = document.getElementById('login-form');
     const tabelBody = document.getElementById('admin-tabel-body');
+    const rekapTabelBody = document.getElementById('admin-rekap-body');
     
-    // Variabel untuk menyimpan password sementara di RAM browser selama buka tab ini
     let savedPassword = '';
+
+    // Daftar lengkap seluruh nama siswa sesuai absen kelas
+    const daftarAbsenKelas = [
+      "Dechri Vanesa Mecca", "Muhammad Apdal", "Khalifia Inayah", "Nazwa Prina Al Atsilah", 
+      "Shevaya Rubyfirlie", "Adinda Khodijah", "Siti Nasuhah", "Fathi Rakha Herlambang", 
+      "Silvi Nur Aini", "Sayyida Nafisa Aulia", "Tiara Fadilatun Nisa", "Cikal Putri Awalia", 
+      "Nabila Nazwa", "Ira Khairina", "Nuha Ramadhani", "Marsha Dwi Della", "Zihan Nuraeni", 
+      "Nicky Puji Rahayu", "Rizki Fazil (boss)", "Muhammad Ridho Nur Islam", "Ahmad Faaza Fauzan Adzima", 
+      "Nur Ahdiayani", "Ananda Dwi Aryani", "Mutia Zakiyyah", "Naila Nur Luna", 
+      "Rihadatul Aisy Avicena Anwar", "Fathi Muhammad Rafi", "Munazi Julita Pratiwi", 
+      "Regard Muhammad Rabbrindran", "Muhammad Fauzan Azhiimi", "Hanan Shofiy Rangkuti", 
+      "Najwa Azzahra", "Shofi Nurjanah", "Kayla Shita Sabila", "Artika", 
+      "Fauziyyah Nurzahra", "Hana Zada Videla", "Kaafi Alfath Syahri", "Echa Junika Alawiyah"
+    ];
+    const TARGET_PER_ANAK = 300000;
+
+    // ==========================================
+    // SISTEM POP-UP KUSTOM (Admin)
+    // ==========================================
+    function showToast(pesan) {
+      let existingToast = document.getElementById('custom-toast');
+      if (existingToast) existingToast.remove();
+
+      let toast = document.createElement('div');
+      toast.id = 'custom-toast';
+      toast.innerHTML = `<span class="iconify" data-icon="mdi:check-decagram" style="font-size: 1.3rem;"></span> ${pesan}`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
+    }
+
+    function showCustomAlert(judul, pesan, callback) {
+      let overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      overlay.innerHTML = `
+        <div class="custom-modal-box">
+          <h3>${judul}</h3>
+          <p>${pesan}</p>
+          <div class="custom-modal-actions">
+            <button class="modal-btn modal-btn-primary" id="modal-ok-btn">Siap, Bos!</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      document.getElementById('modal-ok-btn').onclick = () => {
+        overlay.remove();
+        if (callback) callback();
+      };
+    }
+
+    function showCustomConfirm(judul, pesan, jenisTombol, callbackYes) {
+      let overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      
+      let btnClass = jenisTombol === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary';
+      let teksTombolYa = jenisTombol === 'danger' ? 'Yakin, Hapus!' : 'Lanjutin!';
+
+      overlay.innerHTML = `
+        <div class="custom-modal-box">
+          <h3>${judul}</h3>
+          <p>${pesan}</p>
+          <div class="custom-modal-actions">
+            <button class="modal-btn modal-btn-secondary" id="modal-no-btn">Batalin Dulu</button>
+            <button class="modal-btn ${btnClass}" id="modal-yes-btn">${teksTombolYa}</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      document.getElementById('modal-no-btn').onclick = () => overlay.remove();
+      document.getElementById('modal-yes-btn').onclick = () => {
+        overlay.remove();
+        callbackYes();
+      };
+    }
 
     // ==========================================
     // LOGIKA LOGIN
@@ -88,81 +201,197 @@
         .then(res => res.json())
         .then(data => {
           if (data.result === 'success') {
-            // Login sukses! Simpan password sementara, sembunyikan login, munculkan dashboard
             savedPassword = pass; 
+            
+            // Sembunyikan form login, munculkan dashboard dan rekap
             loginSection.classList.add('hidden');
             adminDashboard.classList.remove('hidden');
-            loadAdminData(); // Muat data tabel
+            if (adminRekap) adminRekap.classList.remove('hidden'); 
+
+            loadAdminData(); 
+            showToast("Berhasil Masuk, Halo Bendahara!");
           } else {
-            alert(data.message); // Tampilkan pesan error (password salah)
+            showCustomAlert("Akses Ditolak ❌", data.message); 
             btnLogin.innerText = "Masuk Panel Admin";
             btnLogin.disabled = false;
           }
         })
         .catch(error => {
-          alert("Koneksi gagal. Coba lagi.");
+          showCustomAlert("Koneksi Gagal", "Terjadi gangguan jaringan, coba lagi ya.");
           btnLogin.innerText = "Masuk Panel Admin";
           btnLogin.disabled = false;
         });
     });
 
     // ==========================================
-    // LOGIKA LOAD DATA ADMIN (Termasuk Tombol Hapus)
+    // LOGIKA LOAD DATA ADMIN & TABEL REKAP
     // ==========================================
     function loadAdminData() {
-      tabelBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>';
-      
+      tabelBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Memuat data...</td></tr>';
+      if (rekapTabelBody) rekapTabelBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Memuat rekap...</td></tr>';
+
       fetch(scriptURL)
         .then(res => res.json())
         .then(data => {
           tabelBody.innerHTML = '';
           if (data.length === 0) {
-            tabelBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Data kosong</td></tr>';
-            return;
+            tabelBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Data kosong</td></tr>';
+          } else {
+            // Render Tabel Riwayat Setoran
+            data.forEach((baris, index) => {
+              let tr = document.createElement('tr');
+              let terkumpul = parseFloat(baris.terkumpul) || 0;
+              let sisaKurang = TARGET_PER_ANAK - terkumpul;
+              if (sisaKurang < 0) sisaKurang = 0;
+
+              let formatTerkumpul = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(terkumpul);
+              let formatTarget = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(TARGET_PER_ANAK);
+              let formatSisa = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(sisaKurang);
+
+              let infoSisa = sisaKurang === 0 ? `<span style="color: #10b981; font-weight: bold;">Lunas</span>` : `<span style="color: #f59e0b; font-weight: 500;">Kurang ${formatSisa}</span>`;
+              if (sisaKurang === 0) tr.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+
+              let tombolAcc = '';
+              if (!baris.status.toLowerCase().includes('lunas')) {
+                tombolAcc = `<button onclick="accData(${baris.baris})" style="background-color: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="iconify" data-icon="mdi:check-circle"></span> ACC
+                </button>`;
+              }
+
+              tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td><strong>${baris.nama}</strong></td>
+                <td>${formatTerkumpul}</td>
+                <td>${formatTarget}</td>
+                <td>${infoSisa}</td>
+                <td>${baris.status}</td>
+                <td>
+                  <div style="display: flex; gap: 5px;">
+                    ${tombolAcc}
+                    <button onclick="hapusData(${baris.baris})" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                      <span class="iconify" data-icon="mdi:delete"></span> Hapus
+                    </button>
+                  </div>
+                </td>
+              `;
+              tabelBody.appendChild(tr);
+            });
           }
 
-          data.forEach((baris, index) => {
-            let tr = document.createElement('tr');
-            let uangRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseFloat(baris.terkumpul) || 0);
-
-            tr.innerHTML = `
-              <td>${index + 1}</td>
-              <td>${baris.nama}</td>
-              <td>${uangRupiah}</td>
-              <td>${baris.status}</td>
-              <td>
-                <button onclick="hapusData(${baris.baris})" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
-                  <span class="iconify" data-icon="mdi:delete"></span> Hapus
-                </button>
-              </td>
-            `;
-            tabelBody.appendChild(tr);
-          });
+          // Render Tabel Rekapitulasi 39 Mahasiswa
+          renderTabelRekap(data);
         });
     }
 
+    // Fungsi untuk merender tabel rekap semua siswa
+    function renderTabelRekap(dataSheets) {
+      if (!rekapTabelBody) return;
+      rekapTabelBody.innerHTML = '';
+
+      // Hitung total setoran ter-ACC per mahasiswa
+      let petaSetoran = {};
+      dataSheets.forEach(row => {
+        let status = row.status ? row.status.toLowerCase() : '';
+        if (status.includes('lunas') || status.includes('valid')) {
+          let nama = row.nama.trim();
+          let jumlah = parseFloat(row.terkumpul) || 0;
+          petaSetoran[nama] = (petaSetoran[nama] || 0) + jumlah;
+        }
+      });
+
+      daftarAbsenKelas.forEach((namaSiswa, index) => {
+        let terkumpulSiswa = petaSetoran[namaSiswa] || 0;
+        let sisaKurang = TARGET_PER_ANAK - terkumpulSiswa;
+        if (sisaKurang < 0) sisaKurang = 0;
+
+        let formatTerkumpul = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(terkumpulSiswa);
+        let formatTarget = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(TARGET_PER_ANAK);
+        let formatSisa = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(sisaKurang);
+
+        let tr = document.createElement('tr');
+        let statusBadge = '';
+
+        if (terkumpulSiswa >= TARGET_PER_ANAK) {
+          statusBadge = `<span style="color: #10b981; font-weight: bold;">Lunas 🎉</span>`;
+          tr.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+        } else if (terkumpulSiswa > 0) {
+          statusBadge = `<span style="color: #f59e0b; font-weight: 500;">Belum Lunas (Cicil)</span>`;
+        } else {
+          statusBadge = `<span style="color: #ef4444; font-weight: 500;">Belum Nabung ❌</span>`;
+        }
+
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td><strong>${namaSiswa}</strong></td>
+          <td>${formatTerkumpul}</td>
+          <td>${formatTarget}</td>
+          <td>${formatSisa}</td>
+          <td>${statusBadge}</td>
+        `;
+        rekapTabelBody.appendChild(tr);
+      });
+    }
+
     // ==========================================
-    // LOGIKA HAPUS DATA
+    // LOGIKA ACC DATA DENGAN POP-UP KUSTOM
+    // ==========================================
+    function accData(nomorBaris) {
+      showCustomConfirm(
+        "Konfirmasi Lunas 💸", 
+        "Yakin nih setoran teman kita sudah masuk? Statusnya bakal berubah jadi <b>Lunas ✅</b> dan total tabungan kelas langsung bertambah!", 
+        "primary", 
+        () => {
+          let formData = new FormData();
+          formData.append('action', 'acc');
+          formData.append('baris', nomorBaris);
+          formData.append('password', savedPassword); 
+
+          fetch(scriptURL, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+              if(data.result === 'success') {
+                showToast("Setoran Berhasil Di-ACC! 🎉");
+                loadAdminData(); 
+              } else {
+                showCustomAlert("Gagal Validasi", data.message); 
+                loadAdminData();
+              }
+            });
+        }
+      );
+    }
+
+    // ==========================================
+    // LOGIKA HAPUS DATA DENGAN POP-UP KUSTOM
     // ==========================================
     function hapusData(nomorBaris) {
-      if(confirm("Yakin hapus data ini secara permanen dari Sheets?")) {
-        let formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('baris', nomorBaris);
-        // Sertakan password yang disimpan tadi sebagai 'kunci' ke backend
-        formData.append('password', savedPassword); 
+      showCustomConfirm(
+        "Hapus Data Setoran? ⚠️", 
+        "Tindakan ini bersifat permanen dan akan menghapus catatan uang dari Google Sheets. Pastikan kamu tidak salah pencet ya, Boss!", 
+        "danger", 
+        () => {
+          let formData = new FormData();
+          formData.append('action', 'delete');
+          formData.append('baris', nomorBaris);
+          formData.append('password', savedPassword);
 
-        fetch(scriptURL, { method: 'POST', body: formData })
-          .then(res => res.json())
-          .then(data => {
-            if(data.result === 'success') {
-              alert('Data terhapus!');
-              loadAdminData(); // Refresh tabel
-            } else {
-              alert('Gagal: ' + data.message); // Muncul jika password tidak valid
-            }
-          });
-      }
+          fetch(scriptURL, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+              if(data.result === 'success') {
+                showToast("Data berhasil dibersihkan!");
+                loadAdminData(); 
+              } else {
+                showCustomAlert("Gagal Menghapus", data.message);
+                loadAdminData();
+              }
+            })
+            .catch(error => {
+              showCustomAlert("Error", "Koneksi bermasalah saat menghapus data.");
+              loadAdminData();
+            });
+        }
+      );
     }
   </script>
 </body>

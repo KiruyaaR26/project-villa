@@ -14,66 +14,80 @@
   <!-- ==========================================
        BAGIAN 1: HEADER & HERO
        ========================================== -->
-  <header>
-    <h1>Healing Akhir Semester Kelas! <span class="iconify" data-icon="mdi:palm-tree"></span></h1>
-    <p>Setelah pusing dihajar tugas dan ujian, saatnya kita refreshing bareng ke Puncak!</p>
+  <!-- Hero langsung muncul saat web dibuka, jadi tetap pakai scroll-anim -->
+  <header class="hero scroll-anim">
+    <div class="hero-content">
+      <h1>Healing Akhir Semester Kelas! <span class="iconify" data-icon="mdi:palm-tree"></span></h1>
+      <p>Setelah pusing dihajar tugas dan ujian, saatnya kita refreshing bareng ke Puncak!</p>
+    </div>
   </header>
 
   <!-- ==========================================
        BAGIAN 2: INFORMASI UTAMA
        ========================================== -->
-  <section id="informasi">
+  <section id="informasi" class="scroll-anim">
     <h2><span class="iconify" data-icon="mdi:map-marker-radius"></span> Detail Destinasi</h2>
     <ul>
-      <li><strong>Lokasi:</strong> Villa Sejuk Indah, Puncak Bogor</li>
-      <li><strong>Tanggal:</strong> 15 - 17 Februari 2027 (3 Hari 2 Malam)</li>
-      <li><strong>Titik Kumpul:</strong> Kampus UIN Syarif Hidayatullah Jakarta</li>
+      <li><strong>Lokasi:</strong> Coming soon!</li>
+      <li><strong>Tanggal:</strong> Coming soon!</li>
+      <li><strong>Titik Kumpul:</strong> Coming soon!</li>
     </ul>
   </section>
 
   <!-- ==========================================
-       BAGIAN 3: FASILITAS & PREVIEW VILLA
+       BAGIAN 3: GALERI SLIDESHOW VILLA
        ========================================== -->
-  <section id="fasilitas">
+  <section id="galeri" class="scroll-anim">
+    <h2><span class="iconify" data-icon="mdi:camera-image"></span> Penampakan Villa</h2>
+    
+    <div class="slideshow-container">
+      <div class="slide fade-anim">
+        <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800" alt="Villa Tampak Depan">
+      </div>
+      <div class="slide fade-anim">
+        <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800" alt="Kolam Renang">
+      </div>
+      <div class="slide fade-anim">
+        <img src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800" alt="Kamar Tidur">
+      </div>
+
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <div class="dots-container">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       BAGIAN 4: FASILITAS VILLA
+       ========================================== -->
+  <section id="fasilitas" class="scroll-anim">
     <h2><span class="iconify" data-icon="mdi:home-variant-outline"></span> Fasilitas Villa</h2>
-    <p>Villa ini punya banyak spot seru buat kita ngumpul dan bikin acara:</p>
-    <ul>
-      <li><span class="iconify" data-icon="mdi:pool"></span> Private Pool (Kolam Renang)</li>
-      <li><span class="iconify" data-icon="mdi:billiard"></span> Billiard & Meja Pingpong</li>
-      <li><span class="iconify" data-icon="mdi:grill"></span> Alat BBQ Lengkap</li>
-      <li><span class="iconify" data-icon="mdi:microphone-variant"></span> Karaoke Set & Smart TV</li>
-      <li><span class="iconify" data-icon="mdi:bed-king-outline"></span> 4 Kamar Tidur Besar</li>
-    </ul>
-    <!-- Silakan ganti src dengan link atau nama file foto villa yang asli -->
-    <!-- <img src="foto-villa.jpg" alt="Foto Villa" style="width:100%; border-radius:8px; margin-top:10px;"> -->
+    <p>Coming soon!</p>
   </section>
 
   <!-- ==========================================
-       BAGIAN 4: RUNDOWN ACARA
+       BAGIAN 5: RUNDOWN ACARA
        ========================================== -->
-  <section id="acara">
+  <section id="acara" class="scroll-anim">
     <h2><span class="iconify" data-icon="mdi:fire"></span> Sekilas Acara</h2>
-    <p>Nggak cuma tidur, kita bakal ngadain acara seru:</p>
-    <ul>
-      <li><strong>Malam Pertama:</strong> BBQ party, nge-grill daging sambil curhat, & Main Werewolf.</li>
-      <li><strong>Hari Kedua:</strong> Berenang, santai, & Karaoke Night.</li>
-      <li><strong>Hari Ketiga:</strong> Packing & jalan-jalan cari oleh-oleh.</li>
-    </ul>
+    <p>Coming soon!</p>
   </section>
 
-  <hr> 
+  <hr class="scroll-anim"> 
 
   <!-- ==========================================
-       BAGIAN 5: TRACKER TABUNGAN
+       BAGIAN 6: TRACKER TABUNGAN
        ========================================== -->
-  <section id="tabungan">
+  <section id="tabungan" class="scroll-anim">
     <h2><span class="iconify" data-icon="mdi:wallet-bifold-outline"></span> Yuk Nabung dari Sekarang!</h2>
     <p>Biar nggak kerasa berat pas hari H, kita cicil bayarnya ya kawan-kawan.</p>
 
-    <!-- KARTU 1: Progress, Total, & Form (Hukum Gestalt: Common Region & Proximity) -->
     <div class="card">
-      
-      <!-- Target dan Progress Bar -->
       <div class="progress-text-wrapper">
         <span>Target: Rp 5.000.000</span>
         <span><span id="progress-text">0</span>% Terkumpul</span>
@@ -82,37 +96,65 @@
         <div id="progress-bar"></div>
       </div>
 
-      <!-- Total Terkumpul -->
       <div class="total-banner">
         <h3>Total Terkumpul:</h3>
         <h3 id="total-uang">Rp 0,00</h3>
       </div>
 
-      <!-- Form Input -->
-<!-- Form Input -->
-    <form name="submit-to-google-sheet">
-      
-      <!-- INI YANG BARU: Dropdown Nama -->
-      <select name="nama" required>
-        <option value="" disabled selected>-- Pilih Nama Kamu --</option>
-        <option value="Andi Saputra">Andi Saputra</option>
-        <option value="Budi Santoso">Budi Santoso</option>
-        <option value="Citra Kirana">Citra Kirana</option>
-        <option value="Dewi Lestari">Dewi Lestari</option>
-        <option value="Eko Prasetyo">Eko Prasetyo</option>
-        <!-- Nanti kamu tinggal tambahkan (copy-paste) option di sini sesuai absen kelasmu -->
-      </select>
+      <form name="submit-to-google-sheet">
+        <select name="nama" required>
+            <option value="" disabled selected>-- Pilih Nama Kamu --</option>
+            <option value="Dechri Vanesa Mecca">Dechri Vanesa Mecca</option>
+            <option value="Muhammad Apdal">Muhammad Apdal</option>
+            <option value="Khalifia Inayah">Khalifia Inayah</option>
+            <option value="Nazwa Prina Al Atsilah">Nazwa Prina Al Atsilah</option>
+            <option value="Shevaya Rubyfirlie">Shevaya Rubyfirlie</option>
+            <option value="Adinda Khodijah">Adinda Khodijah</option>
+            <option value="Siti Nasuhah">Siti Nasuhah</option>
+            <option value="Fathi Rakha Herlambang">Fathi Rakha Herlambang</option>
+            <option value="Silvi Nur Aini">Silvi Nur Aini</option>
+            <option value="Sayyida Nafisa Aulia">Sayyida Nafisa Aulia</option>
+            <option value="Tiara Fadilatun Nisa">Tiara Fadilatun Nisa</option>
+            <option value="Cikal Putri Awalia">Cikal Putri Awalia</option>
+            <option value="Nabila Nazwa">Nabila Nazwa</option>
+            <option value="Ira Khairina">Ira Khairina</option>
+            <option value="Nuha Ramadhani">Nuha Ramadhani</option>
+            <option value="Marsha Dwi Della">Marsha Dwi Della</option>
+            <option value="Zihan Nuraeni">Zihan Nuraeni</option>
+            <option value="Nicky Puji Rahayu">Nicky Puji Rahayu</option>
+            <option value="Rizki Fazil (boss)">Rizki Fazil (boss)</option>
+            <option value="Muhammad Ridho Nur Islam">Muhammad Ridho Nur Islam</option>
+            <option value="Ahmad Faaza Fauzan Adzima">Ahmad Faaza Fauzan Adzima</option>
+            <option value="Nur Ahdiayani">Nur Ahdiayani</option>
+            <option value="Ananda Dwi Aryani">Ananda Dwi Aryani</option>
+            <option value="Mutia Zakiyyah">Mutia Zakiyyah</option>
+            <option value="Naila Nur Luna">Naila Nur Luna</option>
+            <option value="Rihadatul Aisy Avicena Anwar">Rihadatul Aisy Avicena Anwar</option>
+            <option value="Fathi Muhammad Rafi">Fathi Muhammad Rafi</option>
+            <option value="Munazi Julita Pratiwi">Munazi Julita Pratiwi</option>
+            <option value="Regard Muhammad Rabbrindran">Regard Muhammad Rabbrindran</option>
+            <option value="Muhammad Fauzan Azhiimi">Muhammad Fauzan Azhiimi</option>
+            <option value="Hanan Shofiy Rangkuti">Hanan Shofiy Rangkuti</option>
+            <option value="Najwa Azzahra">Najwa Azzahra</option>
+            <option value="Shofi Nurjanah">Shofi Nurjanah</option>
+            <option value="Kayla Shita Sabila">Kayla Shita Sabila</option>
+            <option value="Artika">Artika</option>
+            <option value="Fauziyyah Nurzahra">Fauziyyah Nurzahra</option>
+            <option value="Hana Zada Videla">Hana Zada Videla</option>
+            <option value="Kaafi Alfath Syahri">Kaafi Alfath Syahri</option>
+            <option value="Echa Junika Alawiyah">Echa Junika Alawiyah</option>
+        </select>
 
-      <input type="number" name="terkumpul" placeholder="Jumlah Setoran (Rp)" required min="1000">
-      
-      <button type="submit">
-        <span class="iconify" data-icon="mdi:send-circle-outline"></span> Tambah Data
-      </button>
-    </form>
-
+        <input type="number" name="terkumpul" placeholder="Jumlah Setoran (Rp)" required min="1000" style="margin-bottom: 4px;">
+        <small style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: var(--space-md); margin-top: 0;">
+            *Ketik angka saja tanpa titik, koma, atau Rp (Contoh: 50000)
+        </small>        
+        <button type="submit">
+          <span class="iconify" data-icon="mdi:send-circle-outline"></span> Tambah Data
+        </button>
+      </form>
     </div>
 
-    <!-- KARTU 2 / TABEL DATA (Hukum Gestalt: Similarity) -->
     <div class="table-wrapper">
       <table>
         <thead>
@@ -124,15 +166,12 @@
           </tr>
         </thead>
         <tbody id="tabel-body">
-          <!-- Data dari Google Sheets akan dimuat di sini oleh JavaScript -->
+          <!-- Data dimuat oleh JS -->
         </tbody>
       </table>
     </div>
-    
   </section>
 
-  <!-- Memanggil file JavaScript eksternal di akhir body -->
   <script src="script.js"></script>
-
 </body>
 </html>
